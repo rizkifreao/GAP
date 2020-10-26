@@ -16,6 +16,48 @@
 CREATE DATABASE IF NOT EXISTS `pencacatan_barang` /*!40100 DEFAULT CHARACTER SET latin1 */;
 USE `pencacatan_barang`;
 
+-- Dumping structure for table pencatatan_barang.produksi
+CREATE TABLE IF NOT EXISTS `produksi` (
+  `id_produksi` int(11) NOT NULL AUTO_INCREMENT,
+  `permintaanid` int(11) DEFAULT NULL,
+  `retur` int(11) NOT NULL,
+  `keterangan` varchar(50) DEFAULT NULL,
+  `tanggal` date DEFAULT NULL,
+  PRIMARY KEY (`id_produksi`),
+  KEY `permintaanid` (`permintaanid`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+-- Dumping structure for table pencatatan_barang.satuans
+CREATE TABLE IF NOT EXISTS `satuans` (
+  `id_satuan` int(11) NOT NULL AUTO_INCREMENT,
+  `nama_satuan` varchar(50) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id_satuan`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+
+-- Dumping structure for table pencatatan_barang.produk
+CREATE TABLE IF NOT EXISTS `produk` (
+  `id_produk` int(11) NOT NULL AUTO_INCREMENT,
+  `satuanid` int(11) DEFAULT NULL,
+  `label` varchar(255) DEFAULT NULL,
+  `stok` int(11) DEFAULT '0',
+  PRIMARY KEY (`id_produk`),
+  KEY `FK_produk_satuans` (`satuanid`),
+  CONSTRAINT `FK_produk_satuans` FOREIGN KEY (`satuanid`) REFERENCES `satuans` (`id_satuan`) ON DELETE SET NULL ON UPDATE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `material` (
+  `id_material` int(11) NOT NULL AUTO_INCREMENT,
+  `label` varchar(255) DEFAULT NULL,
+  `jenis` int(11) DEFAULT NULL,
+  `qty_awal` int(11) DEFAULT NULL,
+  `qty_retur` int(11) DEFAULT NULL,
+  `qty_keluar` int(11) DEFAULT NULL,
+  `stok` int(11) DEFAULT '0',
+  PRIMARY KEY (`id_material`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+
 -- Dumping structure for table pencatatan_barang.bom
 CREATE TABLE IF NOT EXISTS `bom` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -31,27 +73,6 @@ CREATE TABLE IF NOT EXISTS `bom` (
   CONSTRAINT `FK_bom_produk` FOREIGN KEY (`produkid`) REFERENCES `produk` (`id_produk`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_bom_satuans` FOREIGN KEY (`satuanid`) REFERENCES `satuans` (`id_satuan`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
-
--- Dumping structure for table pencatatan_barang.bom_detail
-CREATE TABLE IF NOT EXISTS `bom_detail` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `produkid` int(11) DEFAULT NULL,
-  `bomid` int(11) DEFAULT NULL,
-  `materialid` int(11) DEFAULT NULL,
-  `satuanid` int(11) DEFAULT NULL,
-  `qty` int(11) DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK_bom_detail_bom` (`bomid`),
-  KEY `FK_bom_detail_satuans` (`satuanid`),
-  KEY `FK_bom_detail_produk` (`produkid`),
-  KEY `Index 5` (`materialid`),
-  CONSTRAINT `FK_bom_detail_bom` FOREIGN KEY (`bomid`) REFERENCES `bom` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_bom_detail_material` FOREIGN KEY (`materialid`) REFERENCES `material` (`id_material`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_bom_detail_produk` FOREIGN KEY (`produkid`) REFERENCES `produk` (`id_produk`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_bom_detail_satuans` FOREIGN KEY (`satuanid`) REFERENCES `satuans` (`id_satuan`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
 
 -- Dumping structure for table pencatatan_barang.det_produksi
 CREATE TABLE IF NOT EXISTS `det_produksi` (
@@ -86,22 +107,6 @@ CREATE TABLE IF NOT EXISTS `login_attempts` (
   `time` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- Dumping data for table pencatatan_barang.login_attempts: ~0 rows (approximately)
-/*!40000 ALTER TABLE `login_attempts` DISABLE KEYS */;
-/*!40000 ALTER TABLE `login_attempts` ENABLE KEYS */;
-
--- Dumping structure for table pencatatan_barang.material
-CREATE TABLE IF NOT EXISTS `material` (
-  `id_material` int(11) NOT NULL AUTO_INCREMENT,
-  `label` varchar(255) DEFAULT NULL,
-  `jenis` int(11) DEFAULT NULL,
-  `qty_awal` int(11) DEFAULT NULL,
-  `qty_retur` int(11) DEFAULT NULL,
-  `qty_keluar` int(11) DEFAULT NULL,
-  `stok` int(11) DEFAULT '0',
-  PRIMARY KEY (`id_material`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 
 -- Dumping structure for table pencatatan_barang.pembelian
 CREATE TABLE IF NOT EXISTS `pembelian` (
@@ -157,37 +162,6 @@ CREATE TABLE IF NOT EXISTS `permintaan_detail` (
   CONSTRAINT `FK_permintaan_detail_material` FOREIGN KEY (`materialid`) REFERENCES `material` (`id_material`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_permintaan_detail_satuans` FOREIGN KEY (`satuanid`) REFERENCES `satuans` (`id_satuan`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
-
--- Dumping structure for table pencatatan_barang.produk
-CREATE TABLE IF NOT EXISTS `produk` (
-  `id_produk` int(11) NOT NULL AUTO_INCREMENT,
-  `satuanid` int(11) DEFAULT NULL,
-  `label` varchar(255) DEFAULT NULL,
-  `stok` int(11) DEFAULT '0',
-  PRIMARY KEY (`id_produk`),
-  KEY `FK_produk_satuans` (`satuanid`),
-  CONSTRAINT `FK_produk_satuans` FOREIGN KEY (`satuanid`) REFERENCES `satuans` (`id_satuan`) ON DELETE SET NULL ON UPDATE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
-
--- Dumping structure for table pencatatan_barang.produksi
-CREATE TABLE IF NOT EXISTS `produksi` (
-  `id_produksi` int(11) NOT NULL AUTO_INCREMENT,
-  `permintaanid` int(11) DEFAULT NULL,
-  `retur` int(11) NOT NULL,
-  `keterangan` varchar(50) DEFAULT NULL,
-  `tanggal` date DEFAULT NULL,
-  PRIMARY KEY (`id_produksi`),
-  KEY `permintaanid` (`permintaanid`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
-
--- Dumping structure for table pencatatan_barang.satuans
-CREATE TABLE IF NOT EXISTS `satuans` (
-  `id_satuan` int(11) NOT NULL AUTO_INCREMENT,
-  `nama_satuan` varchar(50) DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id_satuan`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 -- Dumping structure for table pencatatan_barang.users
 CREATE TABLE IF NOT EXISTS `users` (
