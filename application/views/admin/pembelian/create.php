@@ -97,7 +97,7 @@
             <label for="inputProduk" class="col-md-3 col-form-label">Stok Awal.</label>
             <div class="col-md-9">
               <div class="form-group bmd-form-group">
-                <input type="number" min="1" class="form-control" name="stok_awal" readonly>
+                <input type="number" class="form-control" name="stok_awal" readonly>
               </div>
             </div>
           </div>
